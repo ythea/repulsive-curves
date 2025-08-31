@@ -22,7 +22,8 @@ cd build
 cmake ..
 make -j4
 ```
-We highly recommend using Clang to build the project. Building with GCC/G++ is possible, but will require a different set of warnings to be suppressed.
+We highly recommend using Clang to build the project (for example `CC=clang CXX=clang++ cmake ..`).
+Building with GCC/G++ is possible, but will require a different set of warnings to be suppressed.
 
 The code can then be run:
 ```
