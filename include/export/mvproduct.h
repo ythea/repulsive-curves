@@ -14,7 +14,7 @@ class BlockClusterTree;
 // Returns:
 // a pointer to a new PolyCurveNetwork object. 
 __attribute__ ((visibility ("default")))
-PolyCurveNetwork* createCurveNetwork(std::vector<std::array<double, 3>> &positions, std::vector<std::array<size_t, 2>> &edges);
+PolyCurveNetwork* createCurveNetwork(std::vector<std::array<double, 3>> &positions, std::vector<std::array<std::size_t, 2>> &edges);
 
 // Arguments:
 // curve - pointer to the PolyCurveNetwork that you want the BVH to be built from
