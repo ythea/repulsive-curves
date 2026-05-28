@@ -10,6 +10,9 @@ __pycache__
 build/
 build_debug/
 
+# Release
+release/
+
 # Editor and OS things
 .DS_Store
 .vscode

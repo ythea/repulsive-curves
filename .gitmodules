@@ -1,7 +1,7 @@
 [submodule "deps/geometry-central"]
 	path = deps/geometry-central
 	url = https://github.com/nmwsharp/geometry-central.git
-	branch = v1
+	branch = master
 [submodule "deps/polyscope"]
 	path = deps/polyscope
 	url = https://github.com/nmwsharp/polyscope.git

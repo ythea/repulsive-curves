@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.10.0)
 
 project(self_avoiding)
 
+### Dependencies
+find_package(OpenMP REQUIRED)
+
 ### Configure output locations
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -22,7 +25,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STR
 
   # using Clang (linux or apple) or GCC
   message("Using clang/gcc compiler flags")
-  SET(BASE_CXX_FLAGS "-std=c++11 -Wall -Wextra -g3 -fPIC -fopenmp")
+  SET(BASE_CXX_FLAGS "-std=c++11 -Wall -Wextra -g3 -fPIC")
   SET(DISABLED_WARNINGS " -Wno-unused-parameter -Wno-return-std-move -Wno-deprecated-copy -Wno-unused-variable -Wno-unused-function -Wno-deprecated-declarations -Wno-missing-braces -Wno-unused-private-field")
   SET(TRACE_INCLUDES " -H -Wno-error=unused-command-line-argument")
 
@@ -105,7 +108,9 @@ set(SRCS
 add_library(rcurves STATIC "${SRCS}")
 target_include_directories(rcurves PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/")
 target_include_directories(rcurves PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/libgmultigrid/include/")
-target_link_libraries(rcurves geometry-central polyscope)
+target_include_directories(rcurves PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/polyscope/deps/args/")
+target_include_directories(rcurves PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/deps/polyscope/deps/json/include/")
+target_link_libraries(rcurves geometry-central polyscope OpenMP::OpenMP_CXX)
 target_compile_options(rcurves PUBLIC -fvisibility=hidden)
 
 add_executable(rcurves_app src/lws_app.cpp)
