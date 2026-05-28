@@ -233,6 +233,7 @@ void LWSApp::customWindow() {
         } else {
             good_step = tpeSolver->StepLS(LWSOptions::useBarnesHut);
             // good_step = tpeSolver->StepLSConstrained(LWSOptions::useBarnesHut, useBackproj);
+            ClearSobolevGradients();
         }
 
         UpdateCurvePositions();
@@ -738,18 +739,26 @@ void LWSApp::DisplaySobolevGradients(const PolyCurveNetwork* curves,
     }
 
     // [gradSegmentIds] once only since tho [curveNodes] values change but NOT its size!
-    static const char* sobolevGradNetworkName = "Sobolev Gradients";
     static const size_t gradsNum = gradSegments.size();
     static std::vector<std::array<size_t, 2>> gradSegmentIds;
     if (gradSegmentIds.empty()) {
         for (size_t i = 0; i <= gradsNum - 2; i += 2) {
             gradSegmentIds.push_back({i, i + 1});
         }
+    }
+    if (polyscope::hasCurveNetwork(sobolevGradNetworkName)) {
+        polyscope::getCurveNetwork(sobolevGradNetworkName)->updateNodePositions(gradSegments);
+        polyscope::requestRedraw();
+    } else {
         std::cout << "Sobolev gradients: " << gradsNum << std::endl;
         polyscope::registerCurveNetwork(sobolevGradNetworkName, gradSegments, gradSegmentIds);
         polyscope::getCurveNetwork(sobolevGradNetworkName)->setRadius(0.01f);
-    } else {
-        polyscope::getCurveNetwork(sobolevGradNetworkName)->updateNodePositions(gradSegments);
+    }
+}
+
+void LWSApp::ClearSobolevGradients() {
+    if (polyscope::hasCurveNetwork(sobolevGradNetworkName)) {
+        polyscope::removeCurveNetwork(sobolevGradNetworkName);
         polyscope::requestRedraw();
     }
 }

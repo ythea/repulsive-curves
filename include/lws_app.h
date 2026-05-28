@@ -29,6 +29,7 @@ public:
     static void DisplayCyclicList(const std::vector<Vector3>& positions, const std::string& name);
     static void DisplaySobolevGradients(const PolyCurveNetwork* curves,
                                         const Eigen::MatrixXd& sobolevGradients);
+    static void ClearSobolevGradients();
 
     void customWindow();
     void initSolver();
@@ -46,8 +47,9 @@ public:
 
     std::string curveName;
     PolyCurveNetwork* curves = nullptr;
-    Eigen::MatrixXd sobolevGradients;
     TPEFlowSolverSC* tpeSolver = nullptr;
+    Eigen::MatrixXd sobolevGradients;
+    static constexpr const char* sobolevGradNetworkName = "Sobolev Gradients";
 
 private:
     void centerizeLoopBarycenter(PolyCurveNetwork* curves);
