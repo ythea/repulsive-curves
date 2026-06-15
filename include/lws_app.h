@@ -17,55 +17,62 @@
 #include "scene_file.h"
 
 namespace LWS {
-    class LWSApp {
-        public:
-        static LWSApp* instance;
-        static double LWSVertexEnergy(surface::VertexPositionGeometry* geom, surface::Vertex vert);
-        static Vector3 LWSVertexGradient(surface::VertexPositionGeometry* geom, surface::Vertex base, surface::Vertex other);
-        void customWindow();
-        void initSolver();
-        void processFileOBJ(std::string filename);
-        void processLoopFile(std::string filename);
-        void processSceneFile(std::string filename);
+class LWSApp {
+public:
+    static LWSApp* instance;
+    static double LWSVertexEnergy(surface::VertexPositionGeometry* geom, const surface::Vertex& vert);
+    static Vector3 LWSVertexGradient(surface::VertexPositionGeometry* geom, const surface::Vertex& base,
+                                     const surface::Vertex& other);
+    static void DisplayWireSphere(const Vector3& center, double radius, const std::string& name);
+    static void DisplayPlane(const Vector3& center, const Vector3& normal, const std::string& name);
+    static void DisplayCurves(const PolyCurveNetwork* curves, const std::string& name);
+    static void DisplayCyclicList(const std::vector<Vector3>& positions, const std::string& name);
+    static void DisplaySobolevGradients(const PolyCurveNetwork* curves,
+                                        const Eigen::MatrixXd& sobolevGradients);
+    static void ClearSobolevGradients();
 
-        void VisualizeMesh(std::string objName);
-        void AddMeshObstacle(std::string objName, Vector3 center, double p, double weight);
-        void AddPlaneObstacle(Vector3 center, Vector3 normal, double p, double weight);
-        void AddSphereObstacle(Vector3 center, double radius);
-        void SubdivideCurve();
-        void MeshImplicitSurface(ImplicitSurface* surface);
-        void WriteImplicitSurface();
+    void customWindow();
+    void initSolver();
+    void processFileOBJ(const std::string& filename);
+    void processLoopFile(const std::string& filename);
+    void processSceneFile(const std::string& filename);
 
-        void DisplayWireSphere(Vector3 center, double radius, std::string name);
-        void DisplayPlane(Vector3 center, Vector3 normal, std::string name);
-        void DisplayCurves(PolyCurveNetwork* curves, std::string name);
-        void DisplayCyclicList(std::vector<Vector3> &positions, std::string name);
-        std::string curveName;
-        PolyCurveNetwork* curves;
-        TPEFlowSolverSC* tpeSolver;
+    void VisualizeMesh(const std::string& objName);
+    void AddMeshObstacle(const std::string& objName, const Vector3& center, double p, double weight);
+    void AddPlaneObstacle(const Vector3& center, const Vector3& normal, double p, double weight);
+    void AddSphereObstacle(const Vector3& center, double radius);
+    void SubdivideCurve();
+    void MeshImplicitSurface(ImplicitSurface* surface);
+    void WriteImplicitSurface();
 
-        private:
-        void centerLoopBarycenter(PolyCurveNetwork* curves);
-        void UpdateCurvePositions();
-        void outputFrame();
-        void outputOBJFrame();
-        void writeCurves( PolyCurveNetwork* network, const std::string& positionFilename, const std::string& tangentFilename );
-        void benchmarkMethods();
-        
-        SceneData sceneData;
-        std::unique_ptr<surface::HalfedgeMesh> mesh;
-        std::unique_ptr<surface::VertexPositionGeometry> geom;
-        double initialAverageLength;
-        int numStuckIterations;
-        int subdivideLimit;
-        int subdivideCount;
-        int currentStep;
-        int stepLimit;
-        bool perfLogging;
-        bool useBackproj;
-        int screenshotNum;
-        bool writeOBJs;
-        int objNum;
+    std::string curveName;
+    PolyCurveNetwork* curves = nullptr;
+    TPEFlowSolverSC* tpeSolver = nullptr;
+    Eigen::MatrixXd sobolevGradients;
+    static constexpr const char* sobolevGradNetworkName = "Sobolev Gradients";
 
-    };
+private:
+    void centerizeLoopBarycenter(PolyCurveNetwork* curves);
+    void UpdateCurvePositions();
+    void outputFrame();
+    void outputOBJFrame();
+    void writeCurves(PolyCurveNetwork* network, const std::string& positionFilename,
+                     const std::string& tangentFilename);
+    void benchmarkMethods();
+
+    SceneData sceneData;
+    std::unique_ptr<surface::HalfedgeMesh> mesh;
+    std::unique_ptr<surface::VertexPositionGeometry> geom;
+    double initialAverageLength = 0.;
+    int numStuckIterations = 0;
+    int subdivideLimit = 0;
+    int subdivideCount = 0;
+    int currentStep = 0;
+    int stepLimit = 0;
+    bool perfLogging = false;
+    bool useBackproj = true;
+    int screenshotNum = 0;
+    bool writeOBJs = false;
+    int objNum = 0;
+};
 }

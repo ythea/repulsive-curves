@@ -3,30 +3,30 @@
 #include "libgmultigrid/domain_constraints.h"
 
 namespace LWS {
-    enum class ConstraintType {
-        Barycenter, EdgeLengths, TotalLength, Pins, TangentPins, Surface
-    };
+enum class ConstraintType {
+    Barycenter, EdgeLengths, TotalLength, Pins, TangentPins, Surface
+};
 
-    class PolyCurveNetwork;
-    int NumRowsForConstraint(ConstraintType type, PolyCurveNetwork* curve);
-    std::string NameOfConstraint(ConstraintType type);
+class PolyCurveNetwork;
+int NumRowsForConstraint(ConstraintType type, PolyCurveNetwork* curve);
+std::string NameOfConstraint(ConstraintType type);
 
-    class VariableConstraintSet : public DomainConstraints<VariableConstraintSet> {
-        private:
-        PolyCurveNetwork* curves;
+class VariableConstraintSet : public DomainConstraints<VariableConstraintSet> {
+private:
+    PolyCurveNetwork* curves = nullptr;
 
-        public:
-        VariableConstraintSet(PolyCurveNetwork* c) {
-            curves = c;
-        }
+public:
+    VariableConstraintSet(PolyCurveNetwork* c) {
+        curves = c;
+    }
 
-        void AddTriplets(std::vector<Eigen::Triplet<double>> &triplets) const;
-        int NumConstraintRows() const;
-        int NumExpectedCols() const;
-        void SetTargetValues(Eigen::VectorXd &targets) const;
-        void NegativeConstraintValues(Eigen::VectorXd &b, Eigen::VectorXd &targets) const;
+    void AddTriplets(std::vector<Eigen::Triplet<double>>& triplets) const;
+    int NumConstraintRows() const;
+    int NumExpectedCols() const;
+    void SetTargetValues(Eigen::VectorXd& targets) const;
+    void NegativeConstraintValues(Eigen::VectorXd& b, Eigen::VectorXd& targets) const;
 
-        int startIndexOfConstraint(ConstraintType type);
-        int rowsOfConstraint(ConstraintType type);
-    };
+    int startIndexOfConstraint(ConstraintType type);
+    int rowsOfConstraint(ConstraintType type);
+};
 }
