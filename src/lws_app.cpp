@@ -465,25 +465,24 @@ void LWSApp::UpdateCurvePositions() {
     Vector3 center = Vector3::zero();
     double radius = 1.;
     if (LWSOptions::normalizeView) {
-        for (size_t i = 0; i < nVerts; i++) {
-            CurveVertex* v_i = curves->GetVertex(i);
-            center += v_i->Position();
+        for (const CurveVertex* vert : curves->Vertices()) {
+            center += vert->Position();
         }
         center /= nVerts;
 
         radius = 0.;
-        for (size_t i = 0; i < nVerts; i++) {
-            CurveVertex* v_i = curves->GetVertex(i);
-            radius = fmax(radius, (v_i->Position() - center).norm2());
+        for (const CurveVertex* vert : curves->Vertices()) {
+            radius = fmax(radius, (vert->Position() - center).norm2());
         }
         radius = sqrt(radius);
+
+        // TODO: Update SobolevGradient rendering, for now just clearing!
+        ClearSobolevGradients();
     }
 
-    for (size_t i = 0; i < nVerts; i++) {
-        CurveVertex* v_i = curves->GetVertex(i);
-        Vector3 v = v_i->Position();
-        v = (v - center) / radius;
-        curve_vecs[v_i->GlobalIndex()] = glm::vec3{v.x, v.y, v.z};
+    for (const CurveVertex* vert : curves->Vertices()) {
+        const auto v = (vert->Position() - center) / radius;
+        curve_vecs[vert->GlobalIndex()] = glm::vec3{v.x, v.y, v.z};
     }
 
     curveNetwork->updateNodePositions(curve_vecs);
